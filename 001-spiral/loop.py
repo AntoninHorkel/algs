@@ -1,10 +1,10 @@
 import numpy as np
 
 if __name__ == "__main__":
-    # print("Zadejte délku stěny spirály: ", end="")
-    L = 8 # int(input())
-    # print("Zadejte sířku mezery mezi stěnami spirály: ", end="")
-    D = 4 # int(input())
+    print("Zadejte délku stěny spirály: ", end="")
+    L = int(input())
+    print("Zadejte sířku mezery mezi stěnami spirály: ", end="")
+    D = int(input())
 
     assert L > 0
     assert D > 0
