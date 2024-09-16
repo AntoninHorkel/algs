@@ -4,4 +4,4 @@
 
 ## Obsah
 
-1. [Spirála](https://github.com/AntoninHorkel/algs/blob/main/001-spiral)
+1. [Spirála](001-spiral)
