@@ -19,7 +19,7 @@ if __name__ == "__main__":
         buffer[l+1:S-l,   S-l-1]            = True
         buffer[S-l-1,     l+1:S-l-1]        = True
         buffer[l+D+1:S-l, l]                = True
-        if l < S-D-1: # TODO: Optimal recursion length.
+        if l < S-D-1:
             return step(l+D+1)
     step(0)
 

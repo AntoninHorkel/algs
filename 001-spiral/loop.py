@@ -12,7 +12,7 @@ if __name__ == "__main__":
     S = L*D*3
 
     buffer = np.zeros((S, S), np.bool_)
-    for l in range(0, S, D+1): # TODO: Optimal range length.
+    for l in range(0, S, D+1):
         buffer[l,         l-(l != 0)*D:S-l] = True
         buffer[l+1:S-l,   S-l-1]            = True
         buffer[S-l-1,     l+1:S-l-1]        = True
