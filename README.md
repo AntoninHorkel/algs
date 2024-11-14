@@ -5,3 +5,4 @@
 ## Obsah
 
 1. [Spirála](001-spiral)
+2. [Řešitel Bludiště](002-maze-solver)

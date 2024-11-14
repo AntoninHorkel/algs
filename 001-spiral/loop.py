@@ -18,7 +18,7 @@ if __name__ == "__main__":
         buffer[S-l-1,     l+1:S-l-1]        = True
         buffer[l+D+1:S-l, l]                = True
 
-    for x in range(S):
-        for y in range(S):
-            print("█" if buffer[x, y] else "#", end="")
+    for y in range(S):
+        for x in range(S):
+            print("█" if buffer[y, x] else " ", end="")
         print()

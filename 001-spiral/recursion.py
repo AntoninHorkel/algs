@@ -23,7 +23,7 @@ if __name__ == "__main__":
             return step(l+D+1)
     step(0)
 
-    for x in range(S):
-        for y in range(S):
-            print("█" if buffer[x, y] else " ", end="")
+    for y in range(S):
+        for x in range(S):
+            print("█" if buffer[y, x] else "  ", end="")
         print()
