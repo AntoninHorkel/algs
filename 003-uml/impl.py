@@ -186,6 +186,115 @@ def test():
 
     print(librarian)
 
-if __name__ == "__main__":
-    test()
+def interface():
+    catalog = Catalog()
+    librarian = Librarian("John Doe", catalog)
 
+    while True:
+        print("Library Menu:")
+        print("1. Add Book")
+        print("2. Remove Book")
+        print("3. View All Books")
+        print("4. Add Reader")
+        print("5. Remove Reader")
+        print("6. View All Readers")
+        print("7. Borrow Book")
+        print("8. Return Book")
+        print("9. Exit")
+
+        choice = input("Choose an option: ")
+
+        if choice == "1":
+            name = input("Enter book name: ")
+            author = input("Enter author name: ")
+            genre = input("Enter genre: ")
+            release_date = parse_date(input("Enter release date (e.g., 'March 12 2020'): "))
+            isbn = input("Enter ISBN: ")
+            print()
+            book = Book(name, author, genre, release_date, isbn)
+            catalog.add_book(book)
+            print(f"Book '{name}' added successfully!")
+
+        elif choice == "2":
+            name = input("Enter book name to remove: ")
+            print()
+            book_list = catalog.search_by_name(name).get_books()
+            if book_list:
+                catalog.remove_book(book_list[0])
+                print(f"Book '{name}' removed successfully!")
+            else:
+                print("Book not found.")
+
+        elif choice == "3":
+            print()
+            print(catalog)
+
+        elif choice == "4":
+            reader_name = input("Enter reader name: ")
+            email = input("Enter reader email: ")
+            print()
+            reader = Reader(reader_name, email)
+            librarian.add_reader(reader)
+            print(f"Reader '{reader_name}' added successfully!")
+
+        elif choice == "5":
+            reader_name = input("Enter reader name to remove: ")
+            print()
+            reader_list = [reader for reader in librarian.readers if reader.get_name() == reader_name]
+            if reader_list:
+                librarian.remove_reader(reader_list[0])
+                print(f"Reader '{reader_name}' removed successfully!")
+            else:
+                print("Reader not found.")
+
+        elif choice == "6":
+            print("\nReaders List:")
+            for reader in librarian.readers:
+                print(reader)
+
+        elif choice == "7":
+            book_name = input("Enter book name to borrow: ")
+            reader_name = input("Enter reader name: ")
+            until_date = parse_date(input("Enter return date (e.g., 'December 3 2024'): "))
+            print()
+            book_list = catalog.search_by_name(book_name).get_books()
+            reader_list = [reader for reader in librarian.readers if reader.get_name() == reader_name]
+
+            if book_list and reader_list:
+                book = book_list[0]
+                reader = reader_list[0]
+                success = book.borrow_or_add_to_waitlist(reader, until_date)
+                if success:
+                    print(f"Book '{book_name}' borrowed by {reader_name} until {until_date}.")
+                else:
+                    print(f"Book '{book_name}' is already borrowed. Added {reader_name} to the waitlist.")
+            else:
+                print("Book or reader not found.")
+
+        elif choice == "8":
+            book_name = input("Enter book name to return: ")
+            reader_name = input("Enter reader name: ")
+            print()
+            book_list = catalog.search_by_name(book_name).get_books()
+            reader_list = [reader for reader in librarian.readers if reader.get_name() == reader_name]
+
+            if book_list and reader_list:
+                book = book_list[0]
+                reader = reader_list[0]
+                try:
+                    book.return_borrowed(reader)
+                    print(f"Book '{book_name}' returned successfully by {reader_name}.")
+                except Exception as e:
+                    print(f"Error: {e}")
+            else:
+                print("Book or reader not found.")
+
+        elif choice == "9":
+            print("Exiting library system. Goodbye!")
+            break
+        else:
+            print("Invalid option. Please try again.")
+
+if __name__ == "__main__":
+    # test()
+    interface()
