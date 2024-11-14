@@ -186,7 +186,7 @@ def test():
 
     print(librarian)
 
-def interface():
+def interface1():
     catalog = Catalog()
     librarian = Librarian("John Doe", catalog)
 
@@ -295,6 +295,138 @@ def interface():
         else:
             print("Invalid option. Please try again.")
 
+def interface2():
+    catalog = Catalog()
+
+    book1 = Book("The Whispers of Elaria", "Armand Greyson", "fantasy", parse_date("March 12 2020"), "978-1-56789-123-4")
+    book2 = Book("Echoes of the Past", "Lillian Harper", "fiction", parse_date("September 8 2018"), "978-1-23456-789-0")
+    book3 = Book("The Quantum Paradox", "Dr. Nathaniel Cho", "fiction", parse_date("January 17 2022"), "978-1-98765-432-1")
+    catalog.add_book(book1)
+    catalog.add_book(book2)
+    catalog.add_book(book3)
+
+    librarian = Librarian("John Doe", catalog)
+
+    while True:
+        print("Welcome to the Library System")
+        user_type = input("Login as (librarian/reader): ").strip().lower()
+
+        if user_type == "librarian":
+            print(f"Logged in as Librarian: {librarian.get_name()}")
+            while True:
+                print("\nLibrarian Options:")
+                print("1. Add a book")
+                print("2. Remove a book")
+                print("3. Add a reader")
+                print("4. Remove a reader")
+                print("5. List all readers")
+                print("6. List all books")
+                print("7. Logout")
+                choice = input("Choose an option: ").strip()
+
+                if choice == "1":
+                    name = input("Enter book name: ")
+                    author = input("Enter author: ")
+                    genre = input("Enter genre: ")
+                    release_date = parse_date(input("Enter release date (e.g., March 12 2020): "))
+                    isbn = input("Enter ISBN: ")
+                    book = Book(name, author, genre, release_date, isbn)
+                    librarian.catalog.add_book(book)
+                    print(f"Book '{name}' added successfully!")
+
+                elif choice == "2":
+                    book_name = input("Enter the name of the book to remove: ")
+                    book_to_remove = next((book for book in librarian.catalog.get_books() if book.get_name() == book_name), None)
+                    if book_to_remove:
+                        librarian.catalog.remove_book(book_to_remove)
+                        print(f"Book '{book_name}' removed successfully!")
+                    else:
+                        print("Book not found.")
+
+                elif choice == "3":
+                    reader_name = input("Enter reader name: ")
+                    reader_email = input("Enter reader email: ")
+                    reader = Reader(reader_name, reader_email)
+                    librarian.add_reader(reader)
+                    print(f"Reader '{reader_name}' added successfully!")
+
+                elif choice == "4":
+                    reader_name = input("Enter the name of the reader to remove: ")
+                    reader_to_remove = next((reader for reader in librarian.readers if reader.get_name() == reader_name), None)
+                    if reader_to_remove:
+                        librarian.remove_reader(reader_to_remove)
+                        print(f"Reader '{reader_name}' removed successfully!")
+                    else:
+                        print("Reader not found.")
+
+                elif choice == "5":
+                    print("List of Readers:")
+                    for reader in librarian.readers:
+                        print(reader)
+
+                elif choice == "6":
+                    print(librarian.catalog)
+
+                elif choice == "7":
+                    break
+
+                else:
+                    print("Invalid option, please try again.")
+
+        elif user_type == "reader":
+            reader_name = input("Enter your name: ").strip()
+            reader = next((r for r in librarian.readers if r.get_name() == reader_name), None)
+            if reader:
+                print(f"Welcome {reader.get_name()}")
+                while True:
+                    print("\nReader Options:")
+                    print("1. Borrow a book")
+                    print("2. Return a book")
+                    print("3. List available books")
+                    print("4. Logout")
+                    choice = input("Choose an option: ").strip()
+
+                    if choice == "1":
+                        book_name = input("Enter the name of the book to borrow: ")
+                        book = next((b for b in librarian.catalog.get_books() if b.get_name() == book_name), None)
+                        if book:
+                            until_date = parse_date(input("Enter the return date (e.g., December 3 2024): "))
+                            if book.borrow_or_add_to_waitlist(reader, until_date):
+                                print(f"You have successfully borrowed '{book_name}'.")
+                            else:
+                                print(f"'{book_name}' is currently borrowed. You have been added to the waitlist.")
+                        else:
+                            print("Book not found.")
+
+                    elif choice == "2":
+                        book_name = input("Enter the name of the book to return: ")
+                        book = next((b for b in librarian.catalog.get_books() if b.get_name() == book_name), None)
+                        if book:
+                            try:
+                                book.return_borrowed(reader)
+                                print(f"You have successfully returned '{book_name}'.")
+                            except Exception as e:
+                                print(f"Error: {e}")
+                        else:
+                            print("Book not found.")
+
+                    elif choice == "3":
+                        print("Available Books:")
+                        for book in librarian.catalog.get_books():
+                            if not book.is_borrowed():
+                                print(book)
+
+                    elif choice == "4":
+                        break
+
+                    else:
+                        print("Invalid option, please try again.")
+            else:
+                print("Reader not found. Please contact the librarian to register.")
+        else:
+            print("Invalid user type. Please enter 'librarian' or 'reader'.")
+
 if __name__ == "__main__":
     # test()
-    interface()
+    # interface1()
+    interface2()
