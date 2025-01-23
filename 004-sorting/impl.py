@@ -69,23 +69,22 @@ def merge_sort(data: np.ndarray) -> np.ndarray:
 def radix_sort(data: np.ndarray) -> np.ndarray:
     if len(data) == 0:
         return data
-    max_val = np.max(data)
-    exp = 1
-    output = np.empty_like(data)
-    while max_val // exp > 0:
-        count = np.zeros(10, dtype=int)
-        for num in data:
-            index = (num // exp) % 10
-            count[index] += 1
-        for i in range(1, 10):
+    data = data.astype(str)
+    max_length = max(len(s) for s in data)
+    data = np.array([s.rjust(max_length) for s in data])
+    for pos in range(max_length - 1, -1, -1):
+        count = np.zeros(256, dtype=int)
+        output = np.empty_like(data)
+        for s in data:
+            count[ord(s[pos])] += 1
+        for i in range(1, 256):
             count[i] += count[i - 1]
         for i in range(len(data) - 1, -1, -1):
-            index = (data[i] // exp) % 10
-            output[count[index] - 1] = data[i]
-            count[index] -= 1
+            char_index = ord(data[i][pos])
+            output[count[char_index] - 1] = data[i]
+            count[char_index] -= 1
         np.copyto(data, output)
-        exp *= 10
-    return data
+    return np.char.strip(data)
 
 def insertion_sort(data: np.ndarray) -> np.ndarray:
     for i in range(1, len(data)):
@@ -132,7 +131,7 @@ if __name__ == "__main__":
     ]
     B = A[:-3]
     C = [
-        ("rando_1M_cela_cisla.txt", np.uint32, "%u", B),
+        # ("rando_1M_cela_cisla.txt", np.uint32, "%u", B),
         ("random_words_1M.txt", np.str_, "%s", B),
         ("random_integers_10M.txt", np.int64, "%i", B), # 32-bit?
         ("random_10M_interval.txt", np.float32, "%f", B),
@@ -143,8 +142,8 @@ if __name__ == "__main__":
             data = np.loadtxt("./in_data/" + file_name, dtype=dtype)
             tic = time.perf_counter()
             # data = alg(data)
-            data = insertion_sort(data)
+            data = radix_sort(data)
             toc = time.perf_counter()
             np.savetxt("./out_data/" + file_name, data, fmt=fmt)
             elapsed_time = toc - tic
-            print(f"Seřazení souboru {file_name} pomocí {"insertion_sort"} trvalo {elapsed_time:0.4f} sekund")
+            print(f"Seřazení souboru {file_name} pomocí {"radix_sort"} trvalo {elapsed_time:0.4f} sekund")
